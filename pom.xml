@@ -14,6 +14,10 @@
     </properties>
     <repositories>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>chew-m2-snapshots</id>
             <url>https://m2.chew.pro/snapshots/</url>
         </repository>
@@ -37,10 +41,9 @@
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>org.bspfsystems</groupId>
-            <artifactId>yamlconfiguration</artifactId>
-            <version>1.0.11</version>
-            <scope>compile</scope>
+            <groupId>me.carleslc.Simple-YAML</groupId>
+            <artifactId>Simple-Yaml</artifactId>
+            <version>1.8</version>
         </dependency>
     </dependencies>
     <build>

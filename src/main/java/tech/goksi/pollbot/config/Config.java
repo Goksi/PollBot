@@ -1,80 +1,51 @@
 package tech.goksi.pollbot.config;
 
-import org.bspfsystems.yamlconfiguration.file.FileConfiguration;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
+import org.simpleyaml.configuration.file.YamlFile;
+import org.simpleyaml.exceptions.InvalidConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
-@SuppressWarnings("ConstantConditions")
 public class Config {
-    private FileConfiguration config = null;
-    private File configFile = null;
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-
-    public FileConfiguration getValues(){
-        if(config == null){
-            reloadConfig();
-        }
-        return config;
-    }
-
-    public void reloadConfig(){
-        if(configFile == null){
-            configFile = new File("config.yml");
-        }
-        config = YamlConfiguration.loadConfiguration(configFile);
-
-        URL url = this.getClass().getClassLoader().getResource("config.yml");
-        URLConnection urlConnection = null;
-        try {
-            assert url != null;
-            urlConnection = url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assert urlConnection != null;
-        urlConnection.setUseCaches(false);
-        InputStream is = null;
-        try{
-            is = urlConnection.getInputStream();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        assert is != null;
-        Reader defConfigStream = new InputStreamReader(is, StandardCharsets.UTF_8);
-        if(defConfigStream != null){
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            config.setDefaults(defConfig);
-        }
+    private  YamlFile config;
+    private final File configFile;
+    private final Logger logger;
+    public Config(){
+        logger = LoggerFactory.getLogger(this.getClass().getName());
+        configFile = new File("config.yml");
     }
 
     public void initConfig(){
-        if(configFile == null) configFile = new File("config.yml");
         if(!configFile.exists()){
-            InputStream in  = this.getClass().getClassLoader().getResourceAsStream("config.yml");
-
-            File outFile = new File("config.yml");
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream("config.yml");
+            assert is!=null;
             try{
-                if(!outFile.exists()){
-                    OutputStream out = new FileOutputStream(outFile);
+                try (OutputStream out = Files.newOutputStream(configFile.toPath())) {
                     byte[] buffer = new byte[1024];
                     int len;
-                    while ((len=in.read(buffer)) > 0){
+                    while ((len = is.read(buffer)) > 0) {
                         out.write(buffer, 0, len);
                     }
-                    out.close();
-                    in.close();
                 }
-
             }catch (IOException e){
                 logger.error("Error while writing config file", e);
             }
+
         }
+        config = new YamlFile(configFile);
+        try{
+            config.loadWithComments();
+        }catch (InvalidConfigurationException e){
+            logger.error("Wrongly formated YAML file", e);
+        }catch (IOException e){
+            logger.error("Error while reading config file", e);
+        }
+
+    }
+
+    public YamlFile getConfig() {
+        return config;
     }
 }
