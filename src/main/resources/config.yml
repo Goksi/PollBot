@@ -1,4 +1,16 @@
+# Any change in BotInfo config section will require a full bot restart
 BotInfo:
-  Token: "Put your token here" #You can get your bot token from https://discord.com/developers/applications
-  ServerId: "Put your server id here"
-  OwnerId: "Put your discord id here" #This is just your discord id
+  Token: 'Put your token here'  #You can get your bot token from https://discord.com/developers/applications
+  ServerId: 'Put your server id here'
+  OwnerId: 'Put your discord id here'  #This is just your discord id
+  Status: 'ONLINE'   #Available DND, IDLE, ONLINE, INVISIBLE
+  EnableActivity: true
+  Activity: 'WATCHING'  #Available PLAYING, WATCHING, LISTENING, STREAMING (Streaming will require valid stream url)
+  Game: 'at the polls'
+  StreamUrl: 'Put url here'
+Commands:
+  reload:
+    SuccessMessage: 'Config successfully reloaded :thumbsup:'
+    ErrorMessage: 'Error while reloading config, check console for more details :('
+    AllowedUsers:
+      - 'id'  #Array of users who will be available to use this command (you can add as many users as you want)

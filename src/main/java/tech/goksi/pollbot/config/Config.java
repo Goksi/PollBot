@@ -10,11 +10,17 @@ import java.nio.file.Files;
 
 public class Config {
     private  YamlFile config;
-    private final File configFile;
+    private  File configFile;
     private final Logger logger;
     public Config(){
         logger = LoggerFactory.getLogger(this.getClass().getName());
         configFile = new File("config.yml");
+    }
+
+    public void reloadConfig() throws IOException {
+        configFile = new File("config.yml");
+        config = new YamlFile(configFile);
+        config.loadWithComments();
     }
 
     public void initConfig(){
@@ -38,7 +44,7 @@ public class Config {
         try{
             config.loadWithComments();
         }catch (InvalidConfigurationException e){
-            logger.error("Wrongly formated YAML file", e);
+            logger.error("Wrongly formatted YAML file", e);
         }catch (IOException e){
             logger.error("Error while reading config file", e);
         }

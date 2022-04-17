@@ -6,9 +6,12 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import org.simpleyaml.configuration.file.YamlFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.goksi.pollbot.commands.Reload;
 import tech.goksi.pollbot.config.Config;
 import tech.goksi.pollbot.polls.Poll;
 
@@ -24,44 +27,72 @@ public class Bot {
     private String ownerId;
     /*end*/
     private final Logger logger;
-    private Config config;
+    private final Config config;
     private final Map<String, Poll> polls; //all the active polls actually
-    //private final Config config;
     private static Bot inst;
     private JDA jda;
-    public Bot(){
+
+    public Bot() {
         inst = this;
         config = new Config();
         config.initConfig();
         polls = new HashMap<>();
         logger = LoggerFactory.getLogger(this.getClass().getName());
     }
-    public void start(){
 
-      //  config.initConfig();
+    public void start() {
         /*init of bot*/
         JDABuilder jdaBuilder = JDABuilder.createDefault(token);
         CommandClientBuilder builder = new CommandClientBuilder();
         builder.forceGuildOnly(guildId);
         builder.setOwnerId(ownerId);
+        switch (getConfig().getString("BotInfo.Status")) {
+            case "DND":
+                builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
+                break;
+            case "IDLE":
+                builder.setStatus(OnlineStatus.IDLE);
+                break;
+            case "INVISIBLE":
+                builder.setStatus(OnlineStatus.INVISIBLE);
+                break;
+            default:
+                builder.setStatus(OnlineStatus.ONLINE);
+        }
+        if(getConfig().getBoolean("BotInfo.EnableActivity")){
+            switch (getConfig().getString("BotInfo.Activity")){
+                case "WATCHING":
+                    builder.setActivity(Activity.watching(getConfig().getString("BotInfo.Game")));
+                    break;
+                case "LISTENING":
+                    builder.setActivity(Activity.listening(getConfig().getString("BotInfo.Game")));
+                    break;
+                case "STREAMING":
+                    builder.setActivity(Activity.streaming(getConfig().getString("BotInfo.Game"), getConfig().getString("BotInfo.StreamUrl")));
+                    break;
+                default:
+                    builder.setActivity(Activity.playing(getConfig().getString("BotInfo.Game")));
+            }
+        }
 
         //should add status
         /*start of commands*/
+        builder.addSlashCommands(new Reload(config));
         /*end of commands*/
 
         CommandClient client = builder.build();
         //jdaBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS);
-        try{
+        try {
             jda = jdaBuilder.build();
-        }catch (LoginException e){
+        } catch (LoginException e) {
             logger.error("Wrong bot token !", e);
             System.exit(12);
         }
         jda.addEventListener(client);
-        try{
+        try {
             jda.awaitReady();
             logger.info("Looks like your bot started successfully!");
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

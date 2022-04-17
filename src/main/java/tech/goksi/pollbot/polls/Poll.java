@@ -14,9 +14,10 @@ public  class Poll {
         SELECTMENU
     }
     private String name;
-    private List<Long> voted = new ArrayList<>();
-    private Map<String, List<Long>>  options = new HashMap<>(); //Option, list of users who voted for that option
+    private final List<Long> voted = new ArrayList<>();
+    private final Map<String, List<Long>>  options = new HashMap<>(); //Option, list of users who voted for that option
     private Types type;
+    private Long messageId;
 
     Poll(String name, Types type){
         this.name = name;
@@ -55,6 +56,14 @@ public  class Poll {
             }
         }
         return 0;
+    }
+
+    public Long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
     }
 
     public void addVote(String option, User u){

@@ -41,7 +41,7 @@ public class Main {
                 //remove buttons/selection menu for active polls?
                 Bot.getInst().getJDA().shutdownNow();
                 System.exit(0);
-            }else logger.info("Wrong command, type stop to stop the bot");
+            }else logger.warn("Wrong command, type stop to stop the bot");
         }
 
     }
