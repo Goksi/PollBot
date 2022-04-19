@@ -2,9 +2,10 @@ package tech.goksi.pollbot;
 
 
 
+import org.simpleyaml.configuration.implementation.api.QuoteStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.goksi.pollbot.config.ConfigUtils;
+import tech.goksi.pollbot.utils.ConfigUtils;
 
 import java.util.Scanner;
 
@@ -19,17 +20,17 @@ public class Main {
         if(token == null || token.equalsIgnoreCase("Put your token here")){
             logger.info("Looks like you didn't setup your token, no worries, you can enter it now: ");
             token = sc.nextLine();
-            ConfigUtils.set("BotInfo.Token", token);
+            ConfigUtils.set("BotInfo.Token", token, QuoteStyle.DOUBLE);
         }
         if(guildId == null || guildId.equalsIgnoreCase("Put your server id here")){
             logger.info("Looks like you didn't setup your server id, no worries, you can enter it now: ");
             guildId = sc.nextLine();
-            ConfigUtils.set("BotInfo.ServerId", guildId);
+            ConfigUtils.set("BotInfo.ServerId", guildId, QuoteStyle.DOUBLE);
         }
         if(ownerId == null || ownerId.equalsIgnoreCase("Put your discord id here")){
             logger.info("Looks like you didn't setup your owner id, no worries, you can enter it now: ");
             ownerId = sc.nextLine();
-            ConfigUtils.set("BotInfo.OwnerId", ownerId);
+            ConfigUtils.set("BotInfo.OwnerId", ownerId, QuoteStyle.DOUBLE);
         }
         bot.setToken(token);
         bot.setGuildId(guildId);

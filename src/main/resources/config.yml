@@ -1,16 +1,35 @@
 # Any change in BotInfo config section will require a full bot restart
 BotInfo:
-  Token: 'Put your token here'  #You can get your bot token from https://discord.com/developers/applications
-  ServerId: 'Put your server id here'
-  OwnerId: 'Put your discord id here'  #This is just your discord id
-  Status: 'ONLINE'   #Available DND, IDLE, ONLINE, INVISIBLE
+  Token: "Put your token here"  #You can get your bot token from https://discord.com/developers/applications
+  ServerId: "Put your server id here"
+  OwnerId: "Put your discord id here"  #This is just your discord id
+  Status: "ONLINE"   #Available DND, IDLE, ONLINE, INVISIBLE
   EnableActivity: true
-  Activity: 'WATCHING'  #Available PLAYING, WATCHING, LISTENING, STREAMING (Streaming will require valid stream url)
-  Game: 'at the polls'
-  StreamUrl: 'Put url here'
+  Activity: "WATCHING"  #Available PLAYING, WATCHING, LISTENING, STREAMING (Streaming will require valid stream url)
+  Game: "at the polls"
+  StreamUrl: "Put url here"
+General:
+  EmbedColor: "#156db2"
+  ErrorColor: "#ff0000"  #hex value, color of embed if error appear (for both yes/no and select menu polls)
+  AlreadyVoted: "Sorry, but you already voted on this poll"
+  NotActive: "Sorry but this poll is not active  anymore"
+  NameExist: "There is currently already active poll with that name, try something other"
+  FailFormat: "Wrong time format, example is 30s, 10m, 3h, 15d.."
+  SuccessColor: "#156db2"
+  SuccessText: "You successfully voted on this poll!"
+  chartBackgroundColor: "042543"
 Commands:
   reload:
-    SuccessMessage: 'Config successfully reloaded :thumbsup:'
-    ErrorMessage: 'Error while reloading config, check console for more details :('
+    SuccessMessage: "Config successfully reloaded :thumbsup:"
+    ErrorMessage: "Error while reloading config, check console for more details :("
     AllowedUsers:
-      - 'id'  #Array of users who will be available to use this command (you can add as many users as you want)
+      - "291491141235507200"  #Array of users who will be available to use this command (you can add as many users as you want)
+  yesno:
+    pollEnded: "This poll is finished"  #footer of finished poll
+    EmbedFooter: "Poll is active till %date% at %time%"
+    YesEmoji: "U+2705"  #unicode
+    NoEmoji: "U+26D4"
+    CoolDown: 15   #In seconds, set to 0 to disable
+    DefaultEnabled: false  #if set to true everyone will be able to use command, if false just AllowedRoles
+    AllowedRoles:
+      - "934804969612279838"  #Array of roles, this will do nothing if DefaultEnabled is set to true, this will have no efffect

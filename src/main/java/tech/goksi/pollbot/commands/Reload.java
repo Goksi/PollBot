@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.config.Config;
-import tech.goksi.pollbot.config.ConfigUtils;
+import tech.goksi.pollbot.utils.ConfigUtils;
 
 import java.io.IOException;
 

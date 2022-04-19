@@ -23,6 +23,8 @@ public class Config {
         config.loadWithComments();
     }
 
+
+
     public void initConfig(){
         if(!configFile.exists()){
             InputStream is = this.getClass().getClassLoader().getResourceAsStream("config.yml");
@@ -49,6 +51,9 @@ public class Config {
             logger.error("Error while reading config file", e);
         }
 
+    }
+    public File getConfigFile() {
+        return configFile;
     }
 
     public YamlFile getConfig() {
