@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.Bot;
+import tech.goksi.pollbot.config.Config;
 import tech.goksi.pollbot.polls.Poll;
 import tech.goksi.pollbot.utils.ConfigUtils;
 import tech.goksi.pollbot.utils.Convert;
@@ -29,16 +30,36 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class YesNoPoll extends SlashCommand {
-    private final String chartConfig = "{"
-                               + "    type: 'bar',"
-                               + "    data: {"
-                               + "        labels: ['YES', 'NO'],"
-                               + "        datasets: [{"
-                               + "            label: 'Votes',"
-                               + "            data: [%d]"
-                               + "        }]"
-                               + "    }"
-                               + "}";
+    private final String chartConfig = "{" +
+            "   type:'bar'," +
+            "   data:{" +
+            "      labels:[" +
+            "         'YES'," +
+            "         'NO'" +
+            "      ]," +
+            "      datasets:[" +
+            "         {" +
+            "            label:'%name statistics'," +
+            "            data:[" +
+            "               %d" +
+            "            ]," +
+            "            backgroundColor: ['%color']" +
+            "         }" +
+            "      ]" +
+            "   }," +
+            "   options:{" +
+            "      scales:{" +
+            "         yAxes:[" +
+            "            {" +
+            "               ticks:{" +
+            "                  stepSize:1," +
+            "                  beginAtZero:true" +
+            "               }" +
+            "            }" +
+            "         ]" +
+            "      }" +
+            "   }" +
+            "}";
     private final Logger logger;
     public YesNoPoll(){
         this.name = "yesno";
@@ -83,7 +104,9 @@ public class YesNoPoll extends SlashCommand {
         eb.setColor(Color.decode(ConfigUtils.getString("General.EmbedColor")));
         eb.setDescription(description);
         eb.setTitle(name);
-        eb.setFooter(ConfigUtils.getString("Commands.yesno.EmbedFooter").replaceAll("%date%", date.format(due)).replaceAll("%time%", time.format(due)));
+        eb.setAuthor(ConfigUtils.getString("General.EmbedAuthor"));
+        eb.setFooter(ConfigUtils.getString("Commands.yesno.EmbedFooter").replaceAll("%date%", date.format(due)).replaceAll("%time%", time.format(due)),
+                ConfigUtils.getString("General.IconUrl"));
 
         event.replyEmbeds(eb.build()).addActionRow(Button.of(ButtonStyle.SUCCESS, "pollYes:" + name, "YES", Emoji.fromUnicode(ConfigUtils.getString("Commands.yesno.YesEmoji"))),
                 Button.of(ButtonStyle.DANGER, "pollNo:" + name, "NO", Emoji.fromUnicode(ConfigUtils.getString("Commands.yesno.NoEmoji")))).queue();
@@ -96,13 +119,19 @@ public class YesNoPoll extends SlashCommand {
             eb.clear();
             int votesYes = poll.getVoteCount("YES");
             int voteNo = poll.getVoteCount("NO");
-            String chConf = chartConfig.replace("%d", votesYes + ", " + voteNo);
+            String chConf = chartConfig.replace("%d", votesYes + ", " + voteNo).replaceAll("%name", poll.getName()).replaceAll("%color",
+                    "rgb(" + Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(1, 3), 16) + "," +
+                            Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(3, 5), 16) + "," +
+                            Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(5, 7), 16));
             QuickChart chart = new QuickChart();
             chart.setConfig(chConf);
             chart.setWidth(500);
             chart.setHeight(300);
 
-            chart.setBackgroundColor(ConfigUtils.getString("General.chartBackgroundColor"));
+            chart.setBackgroundColor("rgb(" + Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(1, 3), 16) + "," +
+                    Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(3, 5), 16) + "," +
+                    Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(5, 7), 16));
+            //logg kanal
             eb.clear();
             eb.setColor(Color.decode(Bot.getInst().getConfig().getString("General.SuccessColor")));
             eb.setImage(chart.getUrl());
@@ -111,9 +140,11 @@ public class YesNoPoll extends SlashCommand {
             eb.setColor(Color.decode(ConfigUtils.getString("General.EmbedColor")));
             eb.setDescription(description);
             eb.setTitle(name);
-            eb.setFooter(ConfigUtils.getString("Commands.yesno.pollEnded"));
+            eb.setFooter(ConfigUtils.getString("Commands.yesno.pollEnded"), ConfigUtils.getString("General.IconUrl"));
+            eb.setAuthor(ConfigUtils.getString("General.EmbedAuthor"));
             poll.getMessage().editMessageEmbeds(eb.build()).setActionRows().queue();
             poll.end();
+            logger.info("Poll named " + poll.getName() + " was ended!");
         }, duration, TimeUnit.MILLISECONDS);
 
 

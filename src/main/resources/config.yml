@@ -17,7 +17,9 @@ General:
   FailFormat: "Wrong time format, example is 30s, 10m, 3h, 15d.."
   SuccessColor: "#156db2"
   SuccessText: "You successfully voted on this poll!"
-  chartBackgroundColor: "042543"
+  chartBackgroundColor: "#f2f2f2"
+  EmbedAuthor: "PollBot"
+  IconUrl: "https://cdn.discordapp.com/avatars/913832514005643314/df612a912243f84fcce186ff1d3fbf2f.webp"
 Commands:
   reload:
     SuccessMessage: "Config successfully reloaded :thumbsup:"
@@ -29,6 +31,7 @@ Commands:
     EmbedFooter: "Poll is active till %date% at %time%"
     YesEmoji: "U+2705"  #unicode
     NoEmoji: "U+26D4"
+    BarColor: "#2489b8"
     CoolDown: 15   #In seconds, set to 0 to disable
     DefaultEnabled: false  #if set to true everyone will be able to use command, if false just AllowedRoles
     AllowedRoles:
