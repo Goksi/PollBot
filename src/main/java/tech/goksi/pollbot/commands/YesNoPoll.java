@@ -10,11 +10,11 @@ import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.Bot;
-import tech.goksi.pollbot.config.Config;
 import tech.goksi.pollbot.polls.Poll;
 import tech.goksi.pollbot.utils.ConfigUtils;
 import tech.goksi.pollbot.utils.Convert;
@@ -61,7 +61,8 @@ public class YesNoPoll extends SlashCommand {
             "   }" +
             "}";
     private final Logger logger;
-    public YesNoPoll(){
+
+    public YesNoPoll() {
         this.name = "yesno";
         this.help = "Command for creating Yes/No polls";
         this.cooldown = ConfigUtils.getInt("Commands.yesno.CoolDown");
@@ -74,11 +75,12 @@ public class YesNoPoll extends SlashCommand {
         this.options = options;
         logger = LoggerFactory.getLogger(this.getClass().getName());
     }
+
     @Override
     protected void execute(SlashCommandEvent event) {
         String name = event.optString("name");
         EmbedBuilder eb = new EmbedBuilder();
-        if(Bot.getInst().getPolls().containsKey(name)){
+        if (Bot.getInst().getPolls().containsKey(name)) {
             eb.setColor(Color.decode(ConfigUtils.getString("General.ErrorColor")));
             eb.setDescription(ConfigUtils.getString("General.NameExist"));
             logger.error(event.getUser().getAsTag() + " tried to create poll with name that already exists");
@@ -113,7 +115,7 @@ public class YesNoPoll extends SlashCommand {
         Message m = event.getHook().retrieveOriginal().complete();
         poll.setMessage(m);
         poll.save();
-        logger.info("Poll named " + name + " was successfully created by " + event.getUser().getAsTag() );
+        logger.info("Poll named " + name + " was successfully created by " + event.getUser().getAsTag());
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(() -> {
             eb.clear();
@@ -142,11 +144,11 @@ public class YesNoPoll extends SlashCommand {
             eb.setTitle(name);
             eb.setFooter(ConfigUtils.getString("Commands.yesno.pollEnded"), ConfigUtils.getString("General.IconUrl"));
             eb.setAuthor(ConfigUtils.getString("General.EmbedAuthor"));
-            poll.getMessage().editMessageEmbeds(eb.build()).setActionRows().queue();
+            ActionRow row = poll.getMessage().getActionRows().get(0);
+            poll.getMessage().editMessageEmbeds(eb.build()).setActionRows(row.asDisabled()).queue();
             poll.end();
             logger.info("Poll named " + poll.getName() + " was ended!");
         }, duration, TimeUnit.MILLISECONDS);
-
 
 
     }
