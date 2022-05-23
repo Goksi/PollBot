@@ -2,6 +2,7 @@ package tech.goksi.pollbot.commands;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
+import net.dv8tion.jda.api.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.config.Config;
@@ -18,8 +19,7 @@ public class Reload extends SlashCommand {
         this.config = config;
         this.name = "reload";
         this.help = "Reloads configuration";
-        this.defaultEnabled = false;
-        this.enabledUsers = ConfigUtils.getStringList("Commands.reload.AllowedUsers").toArray(new String[0]);
+        this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
     }
     @Override
     protected void execute(SlashCommandEvent event) {
