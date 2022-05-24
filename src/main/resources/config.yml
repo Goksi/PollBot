@@ -36,6 +36,7 @@ Commands:
     DefaultEnabled: false  #if set to true everyone will be able to use this command by default
   selection:
     CoolDown: 15
+    pollEnded: "This poll ended and you can't select options anymore"
     DefaultEnabled: false
     EmbedFooter: "This poll is active till %date% at %time%"
     PlaceHolder: "Please select your option"
