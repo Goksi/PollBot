@@ -12,7 +12,10 @@ import org.simpleyaml.configuration.file.YamlFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.commands.Reload;
+import tech.goksi.pollbot.commands.YesNoCommand;
 import tech.goksi.pollbot.config.Config;
+import tech.goksi.pollbot.listeners.ButtonHandler;
+
 import javax.security.auth.login.LoginException;
 import java.io.File;
 
@@ -73,7 +76,7 @@ public class Bot {
 
         //should add status
         /*start of commands*/
-        builder.addSlashCommands(new Reload(config));
+        builder.addSlashCommands(new Reload(config), new YesNoCommand());
         /*end of commands*/
 
         CommandClient client = builder.build();
@@ -84,7 +87,7 @@ public class Bot {
             logger.error("Wrong bot token !", e);
             System.exit(12);
         }
-        jda.addEventListener(client);
+        jda.addEventListener(client, new ButtonHandler());
         try {
             jda.awaitReady();
             logger.info("Looks like your bot started successfully!");
