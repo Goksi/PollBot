@@ -3,11 +3,9 @@ package tech.goksi.pollbot.polls;
 import io.quickchart.QuickChart;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import tech.goksi.pollbot.Bot;
-import tech.goksi.pollbot.exceptions.PollExistException;
 import tech.goksi.pollbot.utils.ConfigUtils;
 
 import java.awt.*;
@@ -20,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public abstract class Poll {
-    public abstract MessageEmbed createMessageEmbed();
+    public abstract EmbedBuilder createMessageEmbed();
     public void addOptions(String... options) {
         for(String option : options){
             this.options.put(option, new ArrayList<>());
@@ -29,15 +27,14 @@ public abstract class Poll {
     private final String description;
     private final Map<String, ArrayList<Long>> options;
     private static final Map<String, Poll> polls = new HashMap<>();
-    private final Message message;
+    private  Message message;
     private final String name;
     private String config;
 
 
-    public Poll(String name,String description , Message msg){
+    public Poll(String name,String description ){
         options = new HashMap<>();
         this.name = name;
-        this.message = msg;
         this.description = description;
     }
     public List<String> getOptions(){
@@ -74,9 +71,7 @@ public abstract class Poll {
         return description;
     }
 
-    public static void checkExist(String name) throws PollExistException {
-        if (polls.containsKey(name)) throw new PollExistException("Poll with name " + name + " already exist");
-    }
+
     protected void setConfig(String config){
         this.config = config;
     }
@@ -84,8 +79,15 @@ public abstract class Poll {
     private Message getMessage() {
         return message;
     }
+    public static boolean exist(String name) {
+        return polls.containsKey(name);
+    }
+    public static Poll getPoll(String name){
+        return polls.get(name);
+    }
 
-    public void start(long duration){
+    public void start(long duration)  {
+        polls.put(name, this);
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(() ->{
             EmbedBuilder eb = new EmbedBuilder();
@@ -97,7 +99,10 @@ public abstract class Poll {
                 count.append(getVoteCount(option)).append(",");
             }
             /*TODO: dodati jos replaceova za config*/
-            config = config.replaceAll("%labels", opt.substring(0, opt.length()-1)).replaceAll("%d", count.substring(0, count.length()-1));
+            config = config.replaceAll("%labels", opt.substring(0, opt.length()-1)).replaceAll("%d", count.substring(0, count.length()-1)).replaceAll("%name", getName())
+                    .replaceAll("%color",  "rgb(" + Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(1, 3), 16) + "," +
+                            Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(3, 5), 16) + "," +
+                            Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(5, 7), 16));
             chart.setConfig(config);
             chart.setWidth(500);
             chart.setHeight(300);
@@ -110,9 +115,13 @@ public abstract class Poll {
             getMessage().replyEmbeds(eb.build()).queue();
             /*editing original embed*/
             ActionRow row = getMessage().getActionRows().get(0);
-            getMessage().editMessageEmbeds(createMessageEmbed()).setActionRows(row.asDisabled()).queue();
+            getMessage().editMessageEmbeds(createMessageEmbed().build()).setActionRows(row.asDisabled()).queue();
             polls.remove(getName());
 
         }, duration, TimeUnit.MILLISECONDS);
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
     }
 }
