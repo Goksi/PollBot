@@ -6,39 +6,39 @@ import tech.goksi.pollbot.utils.ConfigUtils;
 import java.awt.*;
 
 public class YesNoPoll extends Poll{
-    private final String config = "{" +
-            "   type:'bar'," +
-            "   data:{" +
-            "      labels:[" +
-            "         'YES'," +
-            "         'NO'" +
-            "      ]," +
-            "      datasets:[" +
-            "         {" +
-            "            label:'%name statistics'," +
-            "            data:[" +
-            "               %d" +
-            "            ]," +
-            "            backgroundColor: '%color'" +
-            "         }" +
-            "      ]" +
-            "   }," +
-            "   options:{" +
-            "      scales:{" +
-            "         yAxes:[" +
-            "            {" +
-            "               ticks:{" +
-            "                  stepSize:1," +
-            "                  beginAtZero:true" +
-            "               }" +
-            "            }" +
-            "         ]" +
-            "      }" +
-            "   }" +
-            "}";
     public YesNoPoll(String name,String description) {
         super(name, description);
         addOptions("YES", "NO");
+        String config = "{" +
+                "   type:'bar'," +
+                "   data:{" +
+                "      labels:[" +
+                "         'YES'," +
+                "         'NO'" +
+                "      ]," +
+                "      datasets:[" +
+                "         {" +
+                "            label:'%name statistics'," +
+                "            data:[" +
+                "               %d" +
+                "            ]," +
+                "            backgroundColor: '%color'" +
+                "         }" +
+                "      ]" +
+                "   }," +
+                "   options:{" +
+                "      scales:{" +
+                "         yAxes:[" +
+                "            {" +
+                "               ticks:{" +
+                "                  stepSize:1," +
+                "                  beginAtZero:true" +
+                "               }" +
+                "            }" +
+                "         ]" +
+                "      }" +
+                "   }" +
+                "}";
         setConfig(config);
     }
 
