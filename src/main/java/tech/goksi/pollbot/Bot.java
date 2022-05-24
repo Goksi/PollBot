@@ -12,15 +12,13 @@ import org.simpleyaml.configuration.file.YamlFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.commands.Reload;
-import tech.goksi.pollbot.commands.YesNoPoll;
+import tech.goksi.pollbot.commands.SelectionCommand;
+import tech.goksi.pollbot.commands.YesNoCommand;
 import tech.goksi.pollbot.config.Config;
 import tech.goksi.pollbot.listeners.ButtonHandler;
-import tech.goksi.pollbot.polls.Poll;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class Bot {
@@ -31,7 +29,7 @@ public class Bot {
     /*end*/
     private final Logger logger;
     private final Config config;
-    private final Map<String, Poll> polls; //all the active polls actually
+    //private final Map<String, Poll> polls; //all the active polls actually
     private static Bot inst;
     private JDA jda;
 
@@ -39,7 +37,6 @@ public class Bot {
         inst = this;
         config = new Config();
         config.initConfig();
-        polls = new HashMap<>();
         logger = LoggerFactory.getLogger(this.getClass().getName());
     }
 
@@ -80,7 +77,7 @@ public class Bot {
 
         //should add status
         /*start of commands*/
-        builder.addSlashCommands(new Reload(config), new YesNoPoll());
+        builder.addSlashCommands(new Reload(config), new YesNoCommand(), new SelectionCommand());
         /*end of commands*/
 
         CommandClient client = builder.build();
@@ -105,9 +102,6 @@ public class Bot {
         return inst;
     }
 
-    public Map<String, Poll> getPolls() {
-        return polls;
-    }
 
     public Logger getLogger() {
         return logger;

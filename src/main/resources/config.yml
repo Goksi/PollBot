@@ -19,13 +19,13 @@ General:
   SuccessText: "You successfully voted on this poll!"
   chartBackgroundColor: "#f2f2f2"
   EmbedAuthor: "PollBot"
+  LogPolls: true  #if this is set to true, after poll end it will also send log to specific log channel
+  LogChannelId: "934518991328784424"
   IconUrl: "https://cdn.discordapp.com/avatars/913832514005643314/df612a912243f84fcce186ff1d3fbf2f.webp"
 Commands:
   reload:
     SuccessMessage: "Config successfully reloaded :thumbsup:"
     ErrorMessage: "Error while reloading config, check console for more details :("
-    AllowedUsers:
-      - "291491141235507200"  #Array of users who will be available to use this command (you can add as many users as you want)
   yesno:
     pollEnded: "This poll is finished"  #footer of finished poll
     EmbedFooter: "Poll is active till %date% at %time%"
@@ -33,6 +33,10 @@ Commands:
     NoEmoji: "U+26D4"
     BarColor: "#2489b8"
     CoolDown: 15   #In seconds, set to 0 to disable
-    DefaultEnabled: false  #if set to true everyone will be able to use command, if false just AllowedRoles
-    AllowedRoles:
-      - "934804969612279838"  #Array of roles, this will do nothing if DefaultEnabled is set to true, this will have no efffect
+    DefaultEnabled: false  #if set to true everyone will be able to use this command by default
+  selection:
+    CoolDown: 15
+    pollEnded: "This poll ended and you can't select options anymore"
+    DefaultEnabled: false
+    EmbedFooter: "This poll is active till %date% at %time%"
+    PlaceHolder: "Please select your option"
