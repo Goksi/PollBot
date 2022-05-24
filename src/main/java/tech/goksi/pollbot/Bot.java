@@ -12,6 +12,7 @@ import org.simpleyaml.configuration.file.YamlFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.goksi.pollbot.commands.Reload;
+import tech.goksi.pollbot.commands.SelectionCommand;
 import tech.goksi.pollbot.commands.YesNoCommand;
 import tech.goksi.pollbot.config.Config;
 import tech.goksi.pollbot.listeners.ButtonHandler;
@@ -76,7 +77,7 @@ public class Bot {
 
         //should add status
         /*start of commands*/
-        builder.addSlashCommands(new Reload(config), new YesNoCommand());
+        builder.addSlashCommands(new Reload(config), new YesNoCommand(), new SelectionCommand());
         /*end of commands*/
 
         CommandClient client = builder.build();
