@@ -16,6 +16,7 @@ import tech.goksi.pollbot.commands.SelectionCommand;
 import tech.goksi.pollbot.commands.YesNoCommand;
 import tech.goksi.pollbot.config.Config;
 import tech.goksi.pollbot.listeners.ButtonHandler;
+import tech.goksi.pollbot.listeners.SelectionHandler;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -75,7 +76,6 @@ public class Bot {
             }
         }
 
-        //should add status
         /*start of commands*/
         builder.addSlashCommands(new Reload(config), new YesNoCommand(), new SelectionCommand());
         /*end of commands*/
@@ -88,7 +88,7 @@ public class Bot {
             logger.error("Wrong bot token !", e);
             System.exit(12);
         }
-        jda.addEventListener(client, new ButtonHandler());
+        jda.addEventListener(client, new ButtonHandler(), new SelectionHandler());
         try {
             jda.awaitReady();
             logger.info("Looks like your bot started successfully!");
