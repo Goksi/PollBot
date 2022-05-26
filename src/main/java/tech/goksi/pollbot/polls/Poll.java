@@ -9,10 +9,8 @@ import tech.goksi.pollbot.Bot;
 import tech.goksi.pollbot.utils.ConfigUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -95,20 +93,23 @@ public abstract class Poll {
             StringBuilder opt = new StringBuilder();
             StringBuilder count = new StringBuilder();
             for(String option : getOptions()){
-                opt.append(option).append(",");
+                opt.append("'");
+                opt.append(option).append("'");
+                opt.append(",");
                 count.append(getVoteCount(option)).append(",");
             }
-            /*TODO: dodati jos replaceova za config*/
-            config = config.replaceAll("%labels", opt.substring(0, opt.length()-1)).replaceAll("%d", count.substring(0, count.length()-1)).replaceAll("%name", getName())
+            String labels = opt.substring(0, opt.length()-1);
+            config = config.replaceAll("%labels", labels).replaceAll("%d", count.substring(0, count.length()-1)).replaceAll("%name", getName())
                     .replaceAll("%color",  "rgb(" + Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(1, 3), 16) + "," +
                             Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(3, 5), 16) + "," +
-                            Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(5, 7), 16));
+                            Integer.valueOf(ConfigUtils.getString("Commands.yesno.BarColor").substring(5, 7), 16) + ")").replaceAll("%pieColors",
+                            generateColorCodes(getOptions().size()));
             chart.setConfig(config);
             chart.setWidth(500);
             chart.setHeight(300);
             chart.setBackgroundColor("rgb(" + Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(1, 3), 16) + "," +
                     Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(3, 5), 16) + "," +
-                    Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(5, 7), 16));
+                    Integer.valueOf(ConfigUtils.getString("General.chartBackgroundColor").substring(5, 7), 16) + ")");
             /*finished chart eb*/
             eb.setColor(Color.decode(Bot.getInst().getConfig().getString("General.SuccessColor")));
             eb.setImage(chart.getUrl());
@@ -123,5 +124,21 @@ public abstract class Poll {
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    private String generateColorCodes(int count){
+        StringBuilder sb = new StringBuilder();
+        String colorCode;
+        Random rnd = new Random();
+        for(int i = 0; i<count; i++){
+            colorCode = String.format("#%06x", rnd.nextInt(0xffffff + 1));
+            if(sb.toString().contains(colorCode)){
+                i--;
+                continue;
+            }
+            sb.append("'").append(colorCode).append("'").append(",");
+        }
+
+        return sb.substring(0, sb.length()-1);
     }
 }
