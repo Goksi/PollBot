@@ -8,7 +8,23 @@ import java.awt.*;
 public class SelectionPoll extends Poll{
     public SelectionPoll(String name, String description) {
         super(name, description);
-        String config = "";
+        String config = "{" +
+                "    type: 'pie'," +
+                "    data: {" +
+                "      labels: [%labels]," +
+                "      datasets: [{" +
+                "        label: '%name statistics'," +
+                "        backgroundColor: [%pieColors]," +
+                "        data: [%d]" +
+                "      }]" +
+                "    }," +
+                "    options: {" +
+                "      title: {" +
+                "        display: true," +
+                "        text: '%name statistics'" +
+                "      }" +
+                "    }" +
+                "}";
         setConfig(config);
     }
 
