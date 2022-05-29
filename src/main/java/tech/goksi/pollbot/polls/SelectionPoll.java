@@ -19,6 +19,24 @@ public class SelectionPoll extends Poll{
                 "      }]" +
                 "    }," +
                 "    options: {" +
+                       " plugins: {" +
+                "            datalabels: {" +
+                "                display: true," +
+                "                align: 'center'," +
+                "                anchor: 'center'," +
+                "                formatter: function(value, index, values) {" +
+                "                            if(value >0 ){" +
+                "                                value = value.toString();" +
+                "                                value = value.split(/(?=(?:...)*$)/);" +
+                "                                value = value.join(',');" +
+                "                                return value;" +
+                "                            }else{" +
+                "                                value = \"\";" +
+                "                                return value;" +
+                "                            }" +
+                "                        }" +
+                "                    }" +
+                "             },"   +
                 "      title: {" +
                 "        display: true," +
                 "        text: '%name statistics'" +
