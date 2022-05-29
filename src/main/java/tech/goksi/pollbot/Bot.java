@@ -30,7 +30,7 @@ public class Bot {
     /*end*/
     private final Logger logger;
     private final Config config;
-    //private final Map<String, Poll> polls; //all the active polls actually
+
     private static Bot inst;
     private JDA jda;
 
